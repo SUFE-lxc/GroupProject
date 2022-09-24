@@ -1,3 +1,5 @@
+#计算机基本功能和界面框架
+
 from tkinter import *
 import tkinter.messagebox
 from tkinter.ttk import Frame, Label, Entry
@@ -41,6 +43,7 @@ class App(Frame):
         frame3 = Frame(self)
         frame3.pack(fill=X)
 
+        #设置UI
         btnplus = Button(frame3, text="+", width=8, command=self.plus)
         btnplus.pack(side=LEFT, anchor=N, padx=5, pady=5)
 
@@ -61,7 +64,9 @@ class App(Frame):
 
         result = Entry(frame4,textvariable=res)
         result.pack(fill=X, padx=5, expand=True)
-
+     
+        
+        #定义功能
     def errorMsg(self,msg):
         if msg == 'error':
             tkinter.messagebox.showerror('Error!', 'Something went wrong! Maybe invalid entries')
