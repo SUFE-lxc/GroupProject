@@ -1,120 +1,364 @@
-#¼ÆËã»ú»ù±¾¹¦ÄÜºÍ½çÃæ¿ò¼Ü
+import math
+import tkinter
+import re
+root = tkinter.Tk()
 
-from tkinter import *
-import tkinter.messagebox
-from tkinter.ttk import Frame, Label, Entry
+class FError(Exception):
+    pass
 
-class App(Frame):
-    def __init__(self, parent):
-        Frame.__init__(self, parent)
-        self.parent = parent
-        self.initUI()
+class MyCalculator():
 
-    def initUI(self):
-        self.parent.title("Calculator by Udin")
-        self.pack(fill=BOTH, expand=True)
-        global value
-        value = 0
-        global num1
-        num1 = StringVar()
-        global num2
-        num2 = StringVar()
-        global res
-        res = StringVar()
+    def __init__(self, width, height, title):
+        # ÉèÖÃ´°Ìå´óÐ¡
+        root.maxsize(height=height, width=width)
+        root.minsize(height=height, width=width)
+        root.title(title)
+        self.color_index = 0
+        # ÉèÖÃ³õÊ¼Í¸Ã÷¶È
+        self.nums = 1
+        # ÏÔÊ¾Ãæ°å
+        self.top_frame = None
+        # ¼üÅÌÃæ°å
+        self.bootom_frame = None
+        # ²Ù×÷º¯Êý
+        self.calList = []
+        self.flag = False;
+        # ´¢´æ½á¹ûµÄÁÙÊ±±äÁ¿
+        self.result = 0
+        self.result_panel1 = None
+        self.result_panel2 = None
+        self.format = True
 
-        frame1 = Frame(self)
-        frame1.pack(fill=X)
+    def set_label(self):
+        self.top_frame = tkinter.Frame(root,width=450,height=200)
+        self.top_frame.place(x=0,y=0)
 
-        lbl1 = Label(frame1, text="Input Number 1 :", width=15)
-        lbl1.pack(side=LEFT, padx=5, pady=5)
+        self.result_panel1 = tkinter.StringVar()
+        self.result_panel2 = tkinter.StringVar()
+        self.result_panel1.set('')
+        self.result_panel2.set(0)
 
-        entry1 = Entry(frame1,textvariable=num1)
-        entry1.pack(fill=X, padx=5, expand=True)
+        result_label1 = tkinter.Label(self.top_frame, font=('Î¢ÈíÑÅºÚ', 25), bg='#EA9CB7', bd='9', fg='#FFFEFF', anchor='se',
+                              textvariable=self.result_panel1)
+        result_label1.place(width=450, height=100)
+        result_label2 = tkinter.Label(self.top_frame,font=('Î¢ÈíÑÅºÚ', 30), bg='#D288B1', bd='9', fg='#FFFEFF', anchor='se',
+                               textvariable=self.result_panel2)
+        result_label2.place(x=0,y=100, width=450, height=100)
 
-        frame2 = Frame(self)
-        frame2.pack(fill=X)
+    def set_span(self):
+        self.bootom_frame = tkinter.Frame(root, width=450, height=480)
+        self.bootom_frame.place(x=0, y=200)
 
-        lbl2 = Label(frame2, text="Input Number 2 :", width=15)
-        lbl2.pack(side=LEFT, padx=5, pady=5)
+        button_c = tkinter.Button(self.bootom_frame, text='C', highlightbackground='#D288B1', bd='0', font=('Î¢ÈíÑÅºÚ', 20),
+                                  bg='#FFFFFF',
+                                  fg='#B5ADB8', command=lambda: self.pressC())
+        button_c.place(x=0, y=0, width=90, height=80)
 
-        entry2 = Entry(frame2,textvariable=num2)
-        entry2.pack(fill=X, padx=5, expand=True)
+        button_back = tkinter.Button(self.bootom_frame, text='<-', bd='0', font=('Î¢ÈíÑÅºÚ', 20), bg='#FFFFFF',
+                                     fg='#B5ADB8', command=lambda: self.pressBack())
+        button_back.place(x=90, y=0, width=90, height=80)
 
-        frame3 = Frame(self)
-        frame3.pack(fill=X)
+        button_minus = tkinter.Button(self.bootom_frame, text='¡À', bd='0', font=('Î¢ÈíÑÅºÚ', 20), bg='#FFFFFF',
+                                      fg='#B5ADB8', command=lambda: self.pressMinus())
+        button_minus.place(x=180, y=0, width=90, height=80)
 
-        #ÉèÖÃUI
-        btnplus = Button(frame3, text="+", width=8, command=self.plus)
-        btnplus.pack(side=LEFT, anchor=N, padx=5, pady=5)
+        button_left = tkinter.Button(self.bootom_frame, text='(', bd='0', font=('Î¢ÈíÑÅºÚ', 20), bg='#F5CFCB',
+                                     fg='#FFFEFF', command=lambda: self.pressLeft())
+        button_left.place(x=270, y=0, width=90, height=80)
 
-        btnminus = Button(frame3, text="-", width=8, command=self.minus)
-        btnminus.pack(side=LEFT, anchor=N, padx=5, pady=5)
+        button_right = tkinter.Button(self.bootom_frame, text=')', bd='0', font=('Î¢ÈíÑÅºÚ', 20), bg='#F5CFCB',
+                                      fg='#FFFEFF', command=lambda: self.pressRight())
+        button_right.place(x=360, y=0, width=90, height=80)
 
-        btnmul = Button(frame3, text="*", width=8, command=self.mul)
-        btnmul.pack(side=LEFT, anchor=N, padx=5, pady=5)
+        button_1 = tkinter.Button(self.bootom_frame, text='1', bd='0', font=('Î¢ÈíÑÅºÚ', 20), bg='#FFFFFF',
+                                  fg='#B5ADB8', command=lambda: self.pressNum('1'))
+        button_1.place(x=0, y=80, width=90, height=80)
 
-        btndiv = Button(frame3, text="/", width=8, command=self.div)
-        btndiv.pack(side=LEFT, anchor=N, padx=5, pady=5)
+        button_2 = tkinter.Button(self.bootom_frame, text='2', bd='0', font=('Î¢ÈíÑÅºÚ', 20), bg='#FFFFFF',
+                                  fg='#B5ADB8', command=lambda: self.pressNum('2'))
+        button_2.place(x=90, y=80, width=90, height=80)
 
-        frame4 = Frame(self)
-        frame4.pack(fill=X)
+        button_3 = tkinter.Button(self.bootom_frame, text='3', bd='0', font=('Î¢ÈíÑÅºÚ', 20), bg='#FFFFFF',
+                                  fg='#B5ADB8', command=lambda: self.pressNum('3'))
+        button_3.place(x=180, y=80, width=90, height=80)
 
-        lbl3 = Label(frame4, text="Result :", width=10)
-        lbl3.pack(side=LEFT, padx=5, pady=5)
+        button_power = tkinter.Button(self.bootom_frame, text='^', bd='0', font=('Î¢ÈíÑÅºÚ', 20), bg='#F5C0C1',
+                                      fg='#FFFEFF', command=lambda: self.pressOperation('^'))
+        button_power.place(x=270, y=80, width=90, height=80)
 
-        result = Entry(frame4,textvariable=res)
-        result.pack(fill=X, padx=5, expand=True)
-     
-        
-        #¶¨Òå¹¦ÄÜ
-    def errorMsg(self,msg):
-        if msg == 'error':
-            tkinter.messagebox.showerror('Error!', 'Something went wrong! Maybe invalid entries')
-        elif msg == 'divisionerror':
-            tkinter.messagebox.showerror('Division Error', 'The value of input number 2 is 0. No dividing by 0')
+        button_remainder = tkinter.Button(self.bootom_frame, text='%', bd='0', font=('Î¢ÈíÑÅºÚ', 20), bg='#F5C0C1',
+                                          fg='#FFFEFF', command=lambda: self.pressOperation('%'))
+        button_remainder.place(x=360, y=80, width=90, height=80)
 
-    def plus(self):
-        try:
-            value = float(num1.get()) + float(num2.get())
-            res.set(self.makeAsItIs(value))
-        except:
-            self.errorMsg('error')
+        button_4 = tkinter.Button(self.bootom_frame, text='4', bd='0', font=('Î¢ÈíÑÅºÚ', 20), bg='#FFFFFF',
+                                  fg='#B5ADB8', command=lambda: self.pressNum('4'))
+        button_4.place(x=0, y=160, width=90, height=80)
 
-    def minus(self):
-        try:
-            value = float(num1.get()) - float(num2.get())
-            res.set(self.makeAsItIs(value))
-        except:
-            self.errorMsg('error')
+        button_5 = tkinter.Button(self.bootom_frame, text='5', bd='0', font=('Î¢ÈíÑÅºÚ', 20), bg='#FFFFFF',
+                                  fg='#B5ADB8', command=lambda: self.pressNum('5'))
+        button_5.place(x=90, y=160, width=90, height=80)
 
-    def mul(self):
-        try:
-            value = float(num1.get()) * float(num2.get())
-            res.set(self.makeAsItIs(value))
-        except:
-            self.errorMsg('error')
+        button_6 = tkinter.Button(self.bootom_frame, text='6', bd='0', font=('Î¢ÈíÑÅºÚ', 20), bg='#FFFFFF',
+                                  fg='#B5ADB8', command=lambda: self.pressNum('6'))
+        button_6.place(x=180, y=160, width=90, height=80)
 
-    def div(self):
-        # checks if user is trying to divide by zero
-        if num2.get() == '0':
-            self.errorMsg('divisionerror')
-        elif num2.get() != '0':
+        button_plus = tkinter.Button(self.bootom_frame, text='+', bd='0', font=('Î¢ÈíÑÅºÚ', 20), bg='#F3B2B2',
+                                     fg='#FFFEFF', command=lambda: self.pressOperation('+'))
+        button_plus.place(x=270, y=160, width=90, height=80)
+
+        button_sub = tkinter.Button(self.bootom_frame, text='-', bd='0', font=('Î¢ÈíÑÅºÚ', 20), bg='#F3B2B2',
+                                    fg='#FFFEFF', command=lambda: self.pressOperation('-'))
+        button_sub.place(x=360, y=160, width=90, height=80)
+
+        button_7 = tkinter.Button(self.bootom_frame, text='7', bd='0', font=('Î¢ÈíÑÅºÚ', 20), bg='#FFFFFF',
+                                  fg='#B5ADB8', command=lambda: self.pressNum('7'))
+        button_7.place(x=0, y=240, width=90, height=80)
+
+        button_8 = tkinter.Button(self.bootom_frame, text='8', bd='0', font=('Î¢ÈíÑÅºÚ', 20), bg='#FFFFFF',
+                                  fg='#B5ADB8', command=lambda: self.pressNum('8'))
+        button_8.place(x=90, y=240, width=90, height=80)
+
+        button_9 = tkinter.Button(self.bootom_frame, text='9', bd='0', font=('Î¢ÈíÑÅºÚ', 20), bg='#FFFFFF',
+                                  fg='#B5ADB8', command=lambda: self.pressNum('9'))
+        button_9.place(x=180, y=240, width=90, height=80)
+
+        button_mul = tkinter.Button(self.bootom_frame, text='¡Á', bd='0', font=('Î¢ÈíÑÅºÚ', 20), bg='#EFA1A1',
+                                    fg='#FFFEFF', command=lambda: self.pressOperation('*'))
+        button_mul.place(x=270, y=240, width=90, height=80)
+
+        button_div = tkinter.Button(self.bootom_frame, text='¡Â', bd='0', font=('Î¢ÈíÑÅºÚ', 20), bg='#EFA1A1',
+                                    fg='#FFFEFF', command=lambda: self.pressOperation('/'))
+        button_div.place(x=360, y=240, width=90, height=80)
+
+        button_0 = tkinter.Button(self.bootom_frame, text='0', bd='0', font=('Î¢ÈíÑÅºÚ', 20), bg='#FFFFFF',
+                                  fg='#B5ADB8', command=lambda: self.pressNum('0'))
+        button_0.place(x=90, y=320, width=90, height=80)
+
+        button_point = tkinter.Button(self.bootom_frame, text='.', bd='0', font=('Î¢ÈíÑÅºÚ', 20), bg='#FFFFFF',
+                                      fg='#B5ADB8', command=lambda: self.pressNum('.'))
+        button_point.place(x=180, y=320, width=90, height=80)
+
+        button_eq = tkinter.Button(self.bootom_frame, text='=', bd='0', font=('Î¢ÈíÑÅºÚ', 20), bg='#EC809B',
+                                   fg='#FFFEFF', command=lambda: self.pressEqual())
+        button_eq.place(x=270, y=320, width=180, height=80)
+
+        button_jump = tkinter.Button(self.bootom_frame, text='ÌØÊâ', bd='0', font=('Î¢ÈíÑÅºÚ', 20), bg='#FFFFFF',
+                                     fg='#B5ADB8', command=lambda: self.Cover())
+        button_jump.place(x=0, y=320, width=90, height=80)
+
+    def pressC(self):
+        self.calList.clear()
+        self.flag = False
+        self.result_panel1.set('')
+        self.result_panel2.set(0)
+
+    def pressBack(self):
+        result = self.result_panel2.get()
+        result = result[:-1]
+        self.calList.clear()
+        self.calList.append(result)
+        if self.calList[0] == '':
+            self.result_panel2.set(0)
+        else:
+            self.result_panel2.set(''.join(self.calList))
+
+    def pressMinus(self):
+        num = self.result_panel2.get()
+        if num[0] == '(' and num[-1] == ')' or num[0] == '-':
+            if num[1] == '-':
+                num = str(num)[2:-1]
+            if num[0] == '-':
+                num = str(num)[1:]
+        elif num[0] != '-':
+            num = '(-' + num + ')'
+        self.result_panel2.set(num)
+        if len(self.calList) > 0:
+            self.calList[-1] = num
+        if len(self.calList) == 0:
+            self.calList.append(num)
+
+    def pressLeft(self):
+        self.calList.append('(')
+        self.result_panel2.set(''.join(self.calList))
+
+    def pressRight(self):
+        self.calList.append(')')
+        self.result_panel2.set(''.join(self.calList))
+
+    def pressSin(self):
+        self.calList.append('sin()')
+        self.result_panel2.set(''.join(self.calList))
+
+    def pressCos(self):
+        self.calList.append('cos()')
+        self.result_panel2.set(''.join(self.calList))
+
+    def pressTan(self):
+        self.calList.append('tan()')
+        self.result_panel2.set(''.join(self.calList))
+
+    def pressFractal(self):
+        self.calList.clear()
+        result = self.result_panel2.get()
+        self.calList.append('1'+'/'+result)
+        self.result_panel2.set(''.join(self.calList))
+
+    def pressSqrt(self):
+        self.calList.clear()
+        result = self.result_panel2.get()
+        self.calList.append('sqrt({})'.format(result))
+        self.result_panel2.set(''.join(self.calList))
+
+    def pressNum(self, num):
+        oldNum = self.result_panel2.get()
+        if oldNum == '0' and self.flag == False:
+            if num == '.':
+                num = '0.'
+            self.result_panel2.set(num)
+        else:
+            if self.flag == True and oldNum[0] != '(':
+                if len(self.calList) == 1:
+                    self.result_panel2.set(num)
+                    self.calList.clear()
+                    self.calList.append(num)
+                else:
+                    self.calList.append(num)
+                    self.result_panel2.set(''.join(self.calList).
+                                           replace('*','¡Á').
+                                           replace('/','¡Â'))
+                self.flag = False
+            else:
+                self.flag = False
+                if len(self.calList) != 0 and ('sin' in self.calList[-1] or 'cos' in self.calList[-1] or 'tan' in self.calList[-1]):
+                    if 'sin' in self.calList[-1]:
+                        s = re.findall(r"sin\(([^\)]+)\)", ''.join(self.calList[-1]))
+                        self.calList[-1] = str('sin({})').format(''.join(s)+num)
+                        self.result_panel2.set(''.join(self.calList))
+                    elif 'cos' in self.calList[-1]:
+                        s = re.findall(r"cos\(([^\)]+)\)", ''.join(self.calList[-1]))
+                        self.calList[-1] = str('cos({})').format(''.join(s) + num)
+                        self.result_panel2.set(''.join(self.calList))
+                    elif 'tan' in self.calList[-1]:
+                        s = re.findall(r"tan\(([^\)]+)\)", ''.join(self.calList[-1]))
+                        self.calList[-1] = str('tan({})').format(''.join(s) + num)
+                        self.result_panel2.set(''.join(self.calList))
+                else:
+                    newNum = oldNum + num
+                    self.result_panel2.set(newNum)
+                    self.calList.clear()
+                    self.calList.append(newNum)
+
+    def pressOperation(self, operation):
+        num = self.result_panel2.get()
+        if num[-1] in '+-¡Â¡Á^%':
+            self.format = False
+        if len(num) > 0:
+            if num[0] == '(' and len(num) != 1:
+                self.calList.clear()
+                self.calList.append('(' + num[1:])
+            else:
+                self.calList.clear()
+                self.calList.append(num)
+
+        self.isPressOperation = True
+        self.calList.append(operation)
+        self.result_panel2.set(''.join(self.calList).replace('/','¡Â').replace('*','¡Á'))
+
+    def pressEqual(self):
+        if self.format == False:
+            self.format = True
             try:
-                value = float(num1.get()) / float(num2.get())
-                res.set(self.makeAsItIs(value))
-            except:
-                self.errorMsg('error')
+                raise FError("¸ñÊ½´íÎó")
+            except FError:
+                self.result_panel2.set('²Ù×÷·û´íÎó')
+                self.calList.clear()
+                self.result_panel1.set('')
+                return
+        try:
+            if len(self.calList) != 0:
+                self.result = round(eval(''.join(self.calList).replace('^','**').replace('¡Â','/').
+                                         replace('¡Á','*').replace('sin','math.sin')
+                                         .replace('cos','math.cos')
+                                         .replace('tan','math.tan')
+                                         .replace('sqrt','math.sqrt')), 8)
+                self.result_panel2.set(self.result)
+                self.result_panel1.set(''.join(self.calList))
+                self.calList.clear()
+                self.calList.append(str(self.result))
+                self.flag = True
+            else:
+                self.result_panel1.set(0)
+        except SyntaxError:
+            self.result_panel2.set('Ã»ÓÐ²Ù×÷Êý')
+            self.calList.clear()
+            self.result_panel1.set('')
+        except ZeroDivisionError:
+            self.result_panel2.set('³ýÊý²»ÄÜÎª0')
+            self.calList.clear()
+            self.result_panel1.set('')
+        except:
+            self.result_panel2.set('ERROR')
+            self.calList.clear()
+            self.result_panel1.set('')
 
-    def makeAsItIs(self, value):
-        if (value == int(value)):
-            value = int(value)
-        return value
 
-def main():
-    root = Tk()
-    root.geometry("300x140")
-    app = App(root)
-    root.mainloop()
+    def Mouse_Press3(self, e):
+        global color_list
+        color_list = ['#6495ed', '#8b008b', '#00ced1']
+        if self.color_index == len(color_list):
+            self.color_index = 0
+        e.widget['bg'] = color_list[self.color_index]
+        self.color_index += 1
+
+    # Êó±ê¹öÂÖÊÂ¼þ
+    def Mouse_on(self, e):
+        if e.delta == -120 and self.nums > 0.11:
+            self.nums -= 0.1
+            root.attributes("-alpha", self.nums)  # ´°¿ÚÍ¸Ã÷¶È70 %
+        elif e.delta == 120 and self.nums < 1:
+            self.nums += 0.1
+            root.attributes("-alpha", self.nums)
+
+    def call_fun(self):
+        self.bootom_frame.bind_class('Button', '<ButtonPress-3>', self.Mouse_Press3)
+        root.bind('<MouseWheel>', self.Mouse_on)
+
+
+    def Cover(self):
+        root.minsize(height=680,width=450)
+        button_jump = tkinter.Button(self.bootom_frame, text='ÆÕÍ¨', bd='0', font=('Î¢ÈíÑÅºÚ', 20), bg='#FFFFFF',
+                                     fg='#B5ADB8', command=lambda: self.Commer())
+        button_jump.place(x=0, y=320, width=90, height=80)
+
+        button_sin = tkinter.Button(self.bootom_frame, text='sin(x)', bd='0', font=('Î¢ÈíÑÅºÚ', 20), bg='#FFFFFF',
+                               fg='#B5ADB8',command=lambda: self.pressSin())
+        button_sin.place(x=0, y=400, width=90, height=80)
+
+        button_cos = tkinter.Button(self.bootom_frame, text='cos(x)', bd='0', font=('Î¢ÈíÑÅºÚ', 20), bg='#FFFFFF',
+                                     fg='#B5ADB8',command=lambda: self.pressCos())
+        button_cos.place(x=90, y=400, width=90, height=80)
+
+        button_tan = tkinter.Button(self.bootom_frame, text='tan(x)', bd='0', font=('Î¢ÈíÑÅºÚ', 20), bg='#FFFFFF',
+                                   fg='#B5ADB8',command=lambda: self.pressTan())
+        button_tan.place(x=180, y=400, width=90, height=80)
+
+        button_ds = tkinter.Button(self.bootom_frame, text='1/x', bd='0', font=('Î¢ÈíÑÅºÚ', 20), bg='#FFFFFF',
+                                   fg='#B5ADB8',command=lambda: self.pressFractal())
+        button_ds.place(x=270, y=400, width=90, height=80)
+
+        button_sl = tkinter.Button(self.bootom_frame, text='¡Ìx', bd='0', font=('Î¢ÈíÑÅºÚ', 20), bg='#FFFFFF',
+                                     fg='#B5ADB8',command=lambda: self.pressSqrt())
+        button_sl.place(x=360, y=400, width=90, height=80)
+
+    def Commer(self):
+        root.minsize(height=600, width=450)
+        button_jump = tkinter.Button(self.bootom_frame, text='ÌØÊâ', bd='0', font=('Î¢ÈíÑÅºÚ', 20), bg='#FFFFFF',
+                                     fg='#B5ADB8', command=lambda: self.Cover())
+        button_jump.place(x=0, y=320, width=90, height=80)
 
 if __name__ == '__main__':
-    main()
+    calculator = MyCalculator(450, 600, 'ÈíÌÇ')
+    calculator.set_label()
+    calculator.set_span()
+    calculator.call_fun()
+    root.mainloop()
