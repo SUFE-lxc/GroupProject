@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-#
 
 from PyQt5 import QtCore, QtGui
 from menuu import Ui_Menu
