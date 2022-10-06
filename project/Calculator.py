@@ -1,350 +1,442 @@
-﻿import math
-import tkinter
-import re
-root = tkinter.Tk()
+# -*- coding: utf-8 -*-
 
-class FError(Exception):
-    pass
+# Form implementation generated from reading ui file 'calculator.ui'
+#
+# Created by: PyQt4 UI code generator 4.12.1
+#
+# WARNING! All changes made in this file will be lost!
 
-class MyCalculator():
+from PyQt5 import QtCore, QtGui
+from menuu import Ui_Menu
+try:
+    _fromUtf8 = QtCore.QString.fromUtf8
+except AttributeError:
+    def _fromUtf8(s):
+        return s
 
-    def __init__(self, width, height, title):
-        # 设置窗体大小
-        root.maxsize(height=height, width=width)
-        root.minsize(height=height, width=width)
-        root.title(title)
-        self.color_index = 0
-        # 显示面板
-        self.top_frame = None
-        # 键盘面板
-        self.bootom_frame = None
-        # 操作函数
-        self.calList = []
-        self.flag = False;
-        # 储存结果的临时变量
-        self.result = 0
-        self.result_panel1 = None
-        self.result_panel2 = None
-        self.format = True
+try:
+    _encoding = QtGui.QApplication.UnicodeUTF8
+    def _translate(context, text, disambig):
+        return QtGui.QApplication.translate(context, text, disambig, _encoding)
+except AttributeError:
+    def _translate(context, text, disambig):
+        return QtGui.QApplication.translate(context, text, disambig)
 
-    def set_label(self):
-        self.top_frame = tkinter.Frame(root,width=450,height=200)
-        self.top_frame.place(x=0,y=0)
+class Ui_Dialog(object):
+    def openWindow(self):
+        self.window = QtGui.QMainWindow()
+        self.ui = Ui_Menu()
+        self.ui.setupUi(self.window)
+        self.window.show()
+    def setupUi(self, Dialog):
+        Dialog.setObjectName(_fromUtf8("Dialog"))
+        Dialog.resize(440, 539)
+        Dialog.setMinimumSize(QtCore.QSize(440, 539))
+        Dialog.setMaximumSize(QtCore.QSize(440, 539))
+        Dialog.setStyleSheet(_fromUtf8("\n"
+"QToolTip\n"
+"{\n"
+"     border: 1px solid black;\n"
+"     background-color: #D1DBCB;\n"
+"     padding: 1px;\n"
+"     border-radius: 3px;\n"
+"     opacity: 100;\n"
+"}\n"
+"\n"
+"QWidget\n"
+"{\n"
+"    color: #b1b1b1;\n"
+"    background-color: #323232;\n"
+"    selection-background-color:#323232;\n"
+"    selection-color: black;\n"
+"    background-clip: border;\n"
+"    border-image: none;\n"
+"    border: 0px transparent black;\n"
+"    outline: 0;\n"
+"}\n"
+"\n"
+"QWidget:item:hover\n"
+"{\n"
+"    background-color: #D1DBCB;\n"
+"    color: black;\n"
+"}\n"
+"\n"
+"QWidget:item:selected\n"
+"{\n"
+"    background-color: #D1DBCB;\n"
+"    border: 0px\n"
+"}\n"
+"\n"
+"QLineEdit\n"
+"{\n"
+"    background-color: #1e1e1e;\n"
+"    selection-background-color: #D1DBCB;\n"
+"    selection-color: black;\n"
+"    padding: 5px;\n"
+"    border-style: solid;\n"
+"    border: 1px solid #76797C;\n"
+"    border-radius: 2px;\n"
+"    color: #eff0f1;\n"
+"}\n"
+"QPushButton::menu-indicator  {\n"
+"    subcontrol-origin: padding;\n"
+"    subcontrol-position: bottom right;\n"
+"    left: 8px;\n"
+"}\n"
+"QPushButton\n"
+"{\n"
+"    color: #eff0f1;\n"
+"    background-color: #323232;\n"
+"    border-width: 1px;\n"
+"    border-color: #76797C;\n"
+"    border-style: solid;\n"
+"    padding: 5px;\n"
+"    border-radius: 0px;\n"
+"    outline: none;\n"
+"}\n"
+"\n"
+"QPushButton:disabled\n"
+"{\n"
+"    background-color: #323232;\n"
+"    border-width: 1px;\n"
+"    border-color: #454545;\n"
+"    border-style: solid;\n"
+"    padding-top: 5px;\n"
+"    padding-bottom: 5px;\n"
+"    padding-left: 10px;\n"
+"    padding-right: 10px;\n"
+"    border-radius: 2px;\n"
+"    color: #454545;\n"
+"}\n"
+"\n"
+"QPushButton:focus {\n"
+"    background-color: #D1DBCB;\n"
+"    color: black;\n"
+"}\n"
+"\n"
+"QPushButton:pressed\n"
+"{\n"
+"    color: black;\n"
+"    background-color: #D1DBCB;\n"
+"    padding-top: -15px;\n"
+"    padding-bottom: -17px;\n"
+"}\n"
+"\n"
+"QComboBox\n"
+"{\n"
+"    selection-background-color: #D1DBCB;\n"
+"    background-color: #31363B;\n"
+"    border-style: solid;\n"
+"    border: 1px solid #76797C;\n"
+"    border-radius: 2px;\n"
+"    padding: 5px;\n"
+"    min-width: 75px;\n"
+"}\n"
+"\n"
+"QPushButton:checked{\n"
+"    background-color: #76797C;\n"
+"    border-color: #6A6969;\n"
+"}\n"
+"\n"
+"QComboBox:hover,QPushButton:hover,QAbstractSpinBox:hover,QLineEdit:hover,QTextEdit:hover,QPlainTextEdit:hover,QAbstractView:hover,QTreeView:hover\n"
+"{\n"
+"    border: 1px solid #D1DBCB;\n"
+"}\n"
+"QTabWidget:focus, QCheckBox:focus, QRadioButton:focus, QSlider:focus\n"
+"{\n"
+"    border: none;\n"
+"}\n"
+"\n"
+"QHeaderView::section\n"
+"{\n"
+"    background-color: #76797C;\n"
+"    color: #eff0f1;\n"
+"    padding: 5px;\n"
+"    border: 1px solid #76797C;\n"
+"}\n"
+"\n"
+"QSizeGrip {\n"
+"    image: url(:/qss_icons/rc/sizegrip.png);\n"
+"    width: 12px;\n"
+"    height: 12px;\n"
+"}\n"
+"\n"
+"\n"
+"QMainWindow::separator\n"
+"{\n"
+"    background-color: #323232;\n"
+"    color: white;\n"
+"    padding-left: 4px;\n"
+"    spacing: 2px;\n"
+"    border: 1px dashed #76797C;\n"
+"}\n"
+"\n"
+"QMainWindow::separator:hover\n"
+"{\n"
+"\n"
+"    background-color: #787876;\n"
+"    color: white;\n"
+"    padding-left: 4px;\n"
+"    border: 1px solid #76797C;\n"
+"    spacing: 2px;\n"
+"}\n"
+"\n"
+"\n"
+"QMenu::separator\n"
+"{\n"
+"    height: 1px;\n"
+"    background-color: #76797C;\n"
+"    color: white;\n"
+"    padding-left: 4px;\n"
+"    margin-left: 10px;\n"
+"    margin-right: 5px;\n"
+"}\n"
+"\n"
+"QFrame\n"
+"{\n"
+"    border-radius: 0px;\n"
+"    /*border: 1px solid #76797C;*/\n"
+"}\n"
+"\n"
+"\n"
+"QFrame[frameShape=\"0\"]\n"
+"{\n"
+"    border-radius: 0px;\n"
+"    border: 0px transparent #76797C;\n"
+"}\n"
+"\n"
+"QStackedWidget\n"
+"{\n"
+"    border: 1px transparent black;\n"
+"}"))
+        self.b1 = QtGui.QPushButton(Dialog)
+        self.b1.setGeometry(QtCore.QRect(10, 230, 61, 51))
+        self.b1.setObjectName(_fromUtf8("b1"))
+        self.b3 = QtGui.QPushButton(Dialog)
+        self.b3.setGeometry(QtCore.QRect(150, 230, 61, 51))
+        self.b3.setObjectName(_fromUtf8("b3"))
+        self.b2 = QtGui.QPushButton(Dialog)
+        self.b2.setGeometry(QtCore.QRect(80, 230, 61, 51))
+        self.b2.setObjectName(_fromUtf8("b2"))
+        self.b6 = QtGui.QPushButton(Dialog)
+        self.b6.setGeometry(QtCore.QRect(150, 170, 61, 51))
+        self.b6.setObjectName(_fromUtf8("b6"))
+        self.b5 = QtGui.QPushButton(Dialog)
+        self.b5.setGeometry(QtCore.QRect(80, 170, 61, 51))
+        self.b5.setObjectName(_fromUtf8("b5"))
+        self.b4 = QtGui.QPushButton(Dialog)
+        self.b4.setGeometry(QtCore.QRect(10, 170, 61, 51))
+        self.b4.setObjectName(_fromUtf8("b4"))
+        self.b9 = QtGui.QPushButton(Dialog)
+        self.b9.setGeometry(QtCore.QRect(150, 110, 61, 51))
+        self.b9.setObjectName(_fromUtf8("b9"))
+        self.b8 = QtGui.QPushButton(Dialog)
+        self.b8.setGeometry(QtCore.QRect(80, 110, 61, 51))
+        self.b8.setObjectName(_fromUtf8("b8"))
+        self.b7 = QtGui.QPushButton(Dialog)
+        self.b7.setGeometry(QtCore.QRect(10, 110, 61, 51))
+        self.b7.setObjectName(_fromUtf8("b7"))
+        self.plus_minus = QtGui.QPushButton(Dialog)
+        self.plus_minus.setGeometry(QtCore.QRect(80, 290, 61, 51))
+        self.plus_minus.setObjectName(_fromUtf8("plus_minus"))
+        self.b0 = QtGui.QPushButton(Dialog)
+        self.b0.setGeometry(QtCore.QRect(10, 290, 61, 51))
+        self.b0.setObjectName(_fromUtf8("b0"))
+        self.decimal = QtGui.QPushButton(Dialog)
+        self.decimal.setGeometry(QtCore.QRect(150, 290, 61, 51))
+        self.decimal.setObjectName(_fromUtf8("decimal"))
+        self.display = QtGui.QLineEdit(Dialog)
+        self.display.setGeometry(QtCore.QRect(10, 20, 421, 71))
+        self.display.setObjectName(_fromUtf8("display"))
+        self.equal = QtGui.QPushButton(Dialog)
+        self.equal.setGeometry(QtCore.QRect(220, 290, 61, 51))
+        self.equal.setObjectName(_fromUtf8("equal"))
+        self.clear = QtGui.QPushButton(Dialog)
+        self.clear.setGeometry(QtCore.QRect(290, 230, 81, 51))
+        self.clear.setObjectName(_fromUtf8("clear"))
+        self.back = QtGui.QPushButton(Dialog)
+        self.back.setGeometry(QtCore.QRect(290, 170, 81, 51))
+        self.back.setObjectName(_fromUtf8("back"))
+        self.add = QtGui.QPushButton(Dialog)
+        self.add.setGeometry(QtCore.QRect(220, 170, 61, 51))
+        self.add.setObjectName(_fromUtf8("add"))
+        self.substract = QtGui.QPushButton(Dialog)
+        self.substract.setGeometry(QtCore.QRect(220, 230, 61, 51))
+        self.substract.setObjectName(_fromUtf8("substract"))
+        self.divide = QtGui.QPushButton(Dialog)
+        self.divide.setGeometry(QtCore.QRect(290, 290, 81, 51))
+        self.divide.setObjectName(_fromUtf8("divide"))
+        self.multiply = QtGui.QPushButton(Dialog)
+        self.multiply.setGeometry(QtCore.QRect(220, 110, 61, 51))
+        self.multiply.setObjectName(_fromUtf8("multiply"))
+        self.sq_root = QtGui.QPushButton(Dialog)
+        self.sq_root.setGeometry(QtCore.QRect(320, 350, 51, 51))
+        self.sq_root.setObjectName(_fromUtf8("sq_root"))
+        self.sin = QtGui.QPushButton(Dialog)
+        self.sin.setGeometry(QtCore.QRect(10, 350, 51, 51))
+        self.sin.setObjectName(_fromUtf8("sin"))
+        self.cos = QtGui.QPushButton(Dialog)
+        self.cos.setGeometry(QtCore.QRect(70, 350, 51, 51))
+        self.cos.setObjectName(_fromUtf8("cos"))
+        self.tan = QtGui.QPushButton(Dialog)
+        self.tan.setGeometry(QtCore.QRect(130, 350, 51, 51))
+        self.tan.setObjectName(_fromUtf8("tan"))
+        self.power = QtGui.QPushButton(Dialog)
+        self.power.setGeometry(QtCore.QRect(150, 410, 71, 51))
+        self.power.setObjectName(_fromUtf8("power"))
+        self.log = QtGui.QPushButton(Dialog)
+        self.log.setGeometry(QtCore.QRect(250, 350, 61, 51))
+        self.log.setObjectName(_fromUtf8("log"))
+        self.b_open = QtGui.QPushButton(Dialog)
+        self.b_open.setGeometry(QtCore.QRect(10, 410, 61, 51))
+        self.b_open.setObjectName(_fromUtf8("b_open"))
+        self.b_close = QtGui.QPushButton(Dialog)
+        self.b_close.setGeometry(QtCore.QRect(80, 410, 61, 51))
+        self.b_close.setObjectName(_fromUtf8("b_close"))
+        self.ln = QtGui.QPushButton(Dialog)
+        self.ln.setGeometry(QtCore.QRect(190, 350, 51, 51))
+        self.ln.setObjectName(_fromUtf8("ln"))
+        self.e = QtGui.QPushButton(Dialog)
+        self.e.setGeometry(QtCore.QRect(230, 410, 71, 51))
+        self.e.setObjectName(_fromUtf8("e"))
+        self.pi = QtGui.QPushButton(Dialog)
+        self.pi.setGeometry(QtCore.QRect(310, 410, 61, 51))
+        self.pi.setObjectName(_fromUtf8("pi"))
+        self.bco = QtGui.QPushButton(Dialog)
+        self.bco.setGeometry(QtCore.QRect(190, 350, 181, 51))
+        self.bco.setObjectName(_fromUtf8("bco"))
+        self.arg = QtGui.QPushButton(Dialog)
+        self.arg.setGeometry(QtCore.QRect(10, 350, 171, 51))
+        self.arg.setObjectName(_fromUtf8("arg"))
+        self.r1 = QtGui.QRadioButton(Dialog)
+        self.r1.setGeometry(QtCore.QRect(290, 110, 91, 51))
+        self.r1.setObjectName(_fromUtf8("r1"))
+        self.graph = QtGui.QPushButton(Dialog)
+        self.graph.setGeometry(QtCore.QRect(10, 470, 61, 51))
+        self.graph.setObjectName(_fromUtf8("graph"))
+        self.plot = QtGui.QPushButton(Dialog)
+        self.plot.setGeometry(QtCore.QRect(80, 470, 81, 51))
+        self.plot.setObjectName(_fromUtf8("plot"))
+        self.x = QtGui.QPushButton(Dialog)
+        self.x.setGeometry(QtCore.QRect(170, 470, 61, 51))
+        self.x.setObjectName(_fromUtf8("x"))
+        self.cos1 = QtGui.QPushButton(Dialog)
+        self.cos1.setGeometry(QtCore.QRect(380, 170, 51, 51))
+        self.cos1.setObjectName(_fromUtf8("cos1"))
+        self.sin1 = QtGui.QPushButton(Dialog)
+        self.sin1.setGeometry(QtCore.QRect(380, 110, 51, 51))
+        self.sin1.setObjectName(_fromUtf8("sin1"))
+        self.tan1 = QtGui.QPushButton(Dialog)
+        self.tan1.setGeometry(QtCore.QRect(380, 230, 51, 51))
+        self.tan1.setObjectName(_fromUtf8("tan1"))
+        self.fact = QtGui.QPushButton(Dialog)
+        self.fact.setGeometry(QtCore.QRect(380, 290, 51, 51))
+        self.fact.setObjectName(_fromUtf8("fact"))
+        self.comb = QtGui.QPushButton(Dialog)
+        self.comb.setGeometry(QtCore.QRect(380, 350, 51, 51))
+        self.comb.setObjectName(_fromUtf8("comb"))
+        self.perm = QtGui.QPushButton(Dialog)
+        self.perm.setGeometry(QtCore.QRect(380, 410, 51, 51))
+        self.perm.setObjectName(_fromUtf8("perm"))
+        self.com = QtGui.QPushButton(Dialog)
+        self.com.setGeometry(QtCore.QRect(380, 470, 51, 51))
+        self.com.setObjectName(_fromUtf8("com"))
+        self.equ = QtGui.QPushButton(Dialog)
+        self.equ.setGeometry(QtCore.QRect(240, 470, 131, 51))
+        self.equ.setObjectName(_fromUtf8("equ"))
+        self.equ.clicked.connect(self.openWindow)
+        self.graph.raise_()
+        self.plot.raise_()
+        self.x.raise_()
+        self.arg.raise_()
+        self.b1.raise_()
+        self.b3.raise_()
+        self.b2.raise_()
+        self.b6.raise_()
+        self.b5.raise_()
+        self.b4.raise_()
+        self.b9.raise_()
+        self.b8.raise_()
+        self.b7.raise_()
+        self.plus_minus.raise_()
+        self.b0.raise_()
+        self.decimal.raise_()
+        self.display.raise_()
+        self.equal.raise_()
+        self.clear.raise_()
+        self.back.raise_()
+        self.add.raise_()
+        self.substract.raise_()
+        self.divide.raise_()
+        self.multiply.raise_()
+        self.sq_root.raise_()
+        self.sin.raise_()
+        self.cos.raise_()
+        self.tan.raise_()
+        self.power.raise_()
+        self.log.raise_()
+        self.b_open.raise_()
+        self.b_close.raise_()
+        self.ln.raise_()
+        self.e.raise_()
+        self.pi.raise_()
+        self.r1.raise_()
+        self.bco.raise_()
+        self.cos1.raise_()
+        self.sin1.raise_()
+        self.tan1.raise_()
+        self.fact.raise_()
+        self.comb.raise_()
+        self.perm.raise_()
+        self.com.raise_()
+        self.equ.raise_()
 
-        self.result_panel1 = tkinter.StringVar()
-        self.result_panel2 = tkinter.StringVar()
-        self.result_panel1.set('')
-        self.result_panel2.set(0)
+        self.retranslateUi(Dialog)
+        QtCore.QMetaObject.connectSlotsByName(Dialog)
 
-        result_label1 = tkinter.Label(self.top_frame, font=('微软雅黑', 25), bg='#EA9CB7', bd='9', fg='#FFFEFF', anchor='se',
-                              textvariable=self.result_panel1)
-        result_label1.place(width=450, height=100)
-        result_label2 = tkinter.Label(self.top_frame,font=('微软雅黑', 30), bg='#D288B1', bd='9', fg='#FFFEFF', anchor='se',
-                               textvariable=self.result_panel2)
-        result_label2.place(x=0,y=100, width=450, height=100)
-
-    def set_span(self):
-        self.bootom_frame = tkinter.Frame(root, width=450, height=480)
-        self.bootom_frame.place(x=0, y=200)
-
-        button_c = tkinter.Button(self.bootom_frame, text='C', highlightbackground='#D288B1', bd='0', font=('微软雅黑', 20),
-                                  bg='#FFFFFF',
-                                  fg='#B5ADB8', command=lambda: self.pressC())
-        button_c.place(x=0, y=0, width=90, height=80)
-
-        button_back = tkinter.Button(self.bootom_frame, text='<-', bd='0', font=('微软雅黑', 20), bg='#FFFFFF',
-                                     fg='#B5ADB8', command=lambda: self.pressBack())
-        button_back.place(x=90, y=0, width=90, height=80)
-
-        button_minus = tkinter.Button(self.bootom_frame, text='±', bd='0', font=('微软雅黑', 20), bg='#FFFFFF',
-                                      fg='#B5ADB8', command=lambda: self.pressMinus())
-        button_minus.place(x=180, y=0, width=90, height=80)
-
-        button_left = tkinter.Button(self.bootom_frame, text='(', bd='0', font=('微软雅黑', 20), bg='#F5CFCB',
-                                     fg='#FFFEFF', command=lambda: self.pressLeft())
-        button_left.place(x=270, y=0, width=90, height=80)
-
-        button_right = tkinter.Button(self.bootom_frame, text=')', bd='0', font=('微软雅黑', 20), bg='#F5CFCB',
-                                      fg='#FFFEFF', command=lambda: self.pressRight())
-        button_right.place(x=360, y=0, width=90, height=80)
-
-        button_1 = tkinter.Button(self.bootom_frame, text='1', bd='0', font=('微软雅黑', 20), bg='#FFFFFF',
-                                  fg='#B5ADB8', command=lambda: self.pressNum('1'))
-        button_1.place(x=0, y=80, width=90, height=80)
-
-        button_2 = tkinter.Button(self.bootom_frame, text='2', bd='0', font=('微软雅黑', 20), bg='#FFFFFF',
-                                  fg='#B5ADB8', command=lambda: self.pressNum('2'))
-        button_2.place(x=90, y=80, width=90, height=80)
-
-        button_3 = tkinter.Button(self.bootom_frame, text='3', bd='0', font=('微软雅黑', 20), bg='#FFFFFF',
-                                  fg='#B5ADB8', command=lambda: self.pressNum('3'))
-        button_3.place(x=180, y=80, width=90, height=80)
-
-        button_power = tkinter.Button(self.bootom_frame, text='^', bd='0', font=('微软雅黑', 20), bg='#F5C0C1',
-                                      fg='#FFFEFF', command=lambda: self.pressOperation('^'))
-        button_power.place(x=270, y=80, width=90, height=80)
-
-        button_remainder = tkinter.Button(self.bootom_frame, text='%', bd='0', font=('微软雅黑', 20), bg='#F5C0C1',
-                                          fg='#FFFEFF', command=lambda: self.pressOperation('%'))
-        button_remainder.place(x=360, y=80, width=90, height=80)
-
-        button_4 = tkinter.Button(self.bootom_frame, text='4', bd='0', font=('微软雅黑', 20), bg='#FFFFFF',
-                                  fg='#B5ADB8', command=lambda: self.pressNum('4'))
-        button_4.place(x=0, y=160, width=90, height=80)
-
-        button_5 = tkinter.Button(self.bootom_frame, text='5', bd='0', font=('微软雅黑', 20), bg='#FFFFFF',
-                                  fg='#B5ADB8', command=lambda: self.pressNum('5'))
-        button_5.place(x=90, y=160, width=90, height=80)
-
-        button_6 = tkinter.Button(self.bootom_frame, text='6', bd='0', font=('微软雅黑', 20), bg='#FFFFFF',
-                                  fg='#B5ADB8', command=lambda: self.pressNum('6'))
-        button_6.place(x=180, y=160, width=90, height=80)
-
-        button_plus = tkinter.Button(self.bootom_frame, text='+', bd='0', font=('微软雅黑', 20), bg='#F3B2B2',
-                                     fg='#FFFEFF', command=lambda: self.pressOperation('+'))
-        button_plus.place(x=270, y=160, width=90, height=80)
-
-        button_sub = tkinter.Button(self.bootom_frame, text='-', bd='0', font=('微软雅黑', 20), bg='#F3B2B2',
-                                    fg='#FFFEFF', command=lambda: self.pressOperation('-'))
-        button_sub.place(x=360, y=160, width=90, height=80)
-
-        button_7 = tkinter.Button(self.bootom_frame, text='7', bd='0', font=('微软雅黑', 20), bg='#FFFFFF',
-                                  fg='#B5ADB8', command=lambda: self.pressNum('7'))
-        button_7.place(x=0, y=240, width=90, height=80)
-
-        button_8 = tkinter.Button(self.bootom_frame, text='8', bd='0', font=('微软雅黑', 20), bg='#FFFFFF',
-                                  fg='#B5ADB8', command=lambda: self.pressNum('8'))
-        button_8.place(x=90, y=240, width=90, height=80)
-
-        button_9 = tkinter.Button(self.bootom_frame, text='9', bd='0', font=('微软雅黑', 20), bg='#FFFFFF',
-                                  fg='#B5ADB8', command=lambda: self.pressNum('9'))
-        button_9.place(x=180, y=240, width=90, height=80)
-
-        button_mul = tkinter.Button(self.bootom_frame, text='×', bd='0', font=('微软雅黑', 20), bg='#EFA1A1',
-                                    fg='#FFFEFF', command=lambda: self.pressOperation('*'))
-        button_mul.place(x=270, y=240, width=90, height=80)
-
-        button_div = tkinter.Button(self.bootom_frame, text='÷', bd='0', font=('微软雅黑', 20), bg='#EFA1A1',
-                                    fg='#FFFEFF', command=lambda: self.pressOperation('/'))
-        button_div.place(x=360, y=240, width=90, height=80)
-
-        button_0 = tkinter.Button(self.bootom_frame, text='0', bd='0', font=('微软雅黑', 20), bg='#FFFFFF',
-                                  fg='#B5ADB8', command=lambda: self.pressNum('0'))
-        button_0.place(x=90, y=320, width=90, height=80)
-
-        button_point = tkinter.Button(self.bootom_frame, text='.', bd='0', font=('微软雅黑', 20), bg='#FFFFFF',
-                                      fg='#B5ADB8', command=lambda: self.pressNum('.'))
-        button_point.place(x=180, y=320, width=90, height=80)
-
-        button_eq = tkinter.Button(self.bootom_frame, text='=', bd='0', font=('微软雅黑', 20), bg='#EC809B',
-                                   fg='#FFFEFF', command=lambda: self.pressEqual())
-        button_eq.place(x=270, y=320, width=180, height=80)
-
-        button_jump = tkinter.Button(self.bootom_frame, text='特殊', bd='0', font=('微软雅黑', 20), bg='#FFFFFF',
-                                     fg='#B5ADB8', command=lambda: self.Cover())
-        button_jump.place(x=0, y=320, width=90, height=80)
-
-    def pressC(self):
-        self.calList.clear()
-        self.flag = False
-        self.result_panel1.set('')
-        self.result_panel2.set(0)
-
-    def pressBack(self):
-        result = self.result_panel2.get()
-        result = result[:-1]
-        self.calList.clear()
-        self.calList.append(result)
-        if self.calList[0] == '':
-            self.result_panel2.set(0)
-        else:
-            self.result_panel2.set(''.join(self.calList))
-
-    def pressMinus(self):
-        num = self.result_panel2.get()
-        if num[0] == '(' and num[-1] == ')' or num[0] == '-':
-            if num[1] == '-':
-                num = str(num)[2:-1]
-            if num[0] == '-':
-                num = str(num)[1:]
-        elif num[0] != '-':
-            num = '(-' + num + ')'
-        self.result_panel2.set(num)
-        if len(self.calList) > 0:
-            self.calList[-1] = num
-        if len(self.calList) == 0:
-            self.calList.append(num)
-
-    def pressLeft(self):
-        self.calList.append('(')
-        self.result_panel2.set(''.join(self.calList))
-
-    def pressRight(self):
-        self.calList.append(')')
-        self.result_panel2.set(''.join(self.calList))
-
-    def pressSin(self):
-        self.calList.append('sin()')
-        self.result_panel2.set(''.join(self.calList))
-
-    def pressCos(self):
-        self.calList.append('cos()')
-        self.result_panel2.set(''.join(self.calList))
-
-    def pressTan(self):
-        self.calList.append('tan()')
-        self.result_panel2.set(''.join(self.calList))
-
-    def pressFractal(self):
-        self.calList.clear()
-        result = self.result_panel2.get()
-        self.calList.append('1'+'/'+result)
-        self.result_panel2.set(''.join(self.calList))
-
-    def pressSqrt(self):
-        self.calList.clear()
-        result = self.result_panel2.get()
-        self.calList.append('sqrt({})'.format(result))
-        self.result_panel2.set(''.join(self.calList))
-
-    def pressNum(self, num):
-        oldNum = self.result_panel2.get()
-        if oldNum == '0' and self.flag == False:
-            if num == '.':
-                num = '0.'
-            self.result_panel2.set(num)
-        else:
-            if self.flag == True and oldNum[0] != '(':
-                if len(self.calList) == 1:
-                    self.result_panel2.set(num)
-                    self.calList.clear()
-                    self.calList.append(num)
-                else:
-                    self.calList.append(num)
-                    self.result_panel2.set(''.join(self.calList).
-                                           replace('*','×').
-                                           replace('/','÷'))
-                self.flag = False
-            else:
-                self.flag = False
-                if len(self.calList) != 0 and ('sin' in self.calList[-1] or 'cos' in self.calList[-1] or 'tan' in self.calList[-1]):
-                    if 'sin' in self.calList[-1]:
-                        s = re.findall(r"sin\(([^\)]+)\)", ''.join(self.calList[-1]))
-                        self.calList[-1] = str('sin({})').format(''.join(s)+num)
-                        self.result_panel2.set(''.join(self.calList))
-                    elif 'cos' in self.calList[-1]:
-                        s = re.findall(r"cos\(([^\)]+)\)", ''.join(self.calList[-1]))
-                        self.calList[-1] = str('cos({})').format(''.join(s) + num)
-                        self.result_panel2.set(''.join(self.calList))
-                    elif 'tan' in self.calList[-1]:
-                        s = re.findall(r"tan\(([^\)]+)\)", ''.join(self.calList[-1]))
-                        self.calList[-1] = str('tan({})').format(''.join(s) + num)
-                        self.result_panel2.set(''.join(self.calList))
-                else:
-                    newNum = oldNum + num
-                    self.result_panel2.set(newNum)
-                    self.calList.clear()
-                    self.calList.append(newNum)
-
-    def pressOperation(self, operation):
-        num = self.result_panel2.get()
-        if num[-1] in '+-÷×^%':
-            self.format = False
-        if len(num) > 0:
-            if num[0] == '(' and len(num) != 1:
-                self.calList.clear()
-                self.calList.append('(' + num[1:])
-            else:
-                self.calList.clear()
-                self.calList.append(num)
-
-        self.isPressOperation = True
-        self.calList.append(operation)
-        self.result_panel2.set(''.join(self.calList).replace('/','÷').replace('*','×'))
-
-    def pressEqual(self):
-        if self.format == False:
-            self.format = True
-            try:
-                raise FError("格式错误")
-            except FError:
-                self.result_panel2.set('操作符错误')
-                self.calList.clear()
-                self.result_panel1.set('')
-                return
-        try:
-            if len(self.calList) != 0:
-                self.result = round(eval(''.join(self.calList).replace('^','**').replace('÷','/').
-                                         replace('×','*').replace('sin','math.sin')
-                                         .replace('cos','math.cos')
-                                         .replace('tan','math.tan')
-                                         .replace('sqrt','math.sqrt')), 8)
-                self.result_panel2.set(self.result)
-                self.result_panel1.set(''.join(self.calList))
-                self.calList.clear()
-                self.calList.append(str(self.result))
-                self.flag = True
-            else:
-                self.result_panel1.set(0)
-        except SyntaxError:
-            self.result_panel2.set('没有操作数')
-            self.calList.clear()
-            self.result_panel1.set('')
-        except ZeroDivisionError:
-            self.result_panel2.set('除数不能为0')
-            self.calList.clear()
-            self.result_panel1.set('')
-        except:
-            self.result_panel2.set('ERROR')
-            self.calList.clear()
-            self.result_panel1.set('')
-
-
-    def Mouse_Press3(self, e):
-        global color_list
-        color_list = ['#6495ed', '#8b008b', '#00ced1']
-        if self.color_index == len(color_list):
-            self.color_index = 0
-        e.widget['bg'] = color_list[self.color_index]
-        self.color_index += 1
-
-
-
-
-    def Cover(self):
-        root.minsize(height=680,width=450)
-        button_jump = tkinter.Button(self.bootom_frame, text='普通', bd='0', font=('微软雅黑', 20), bg='#FFFFFF',
-                                     fg='#B5ADB8', command=lambda: self.Commer())
-        button_jump.place(x=0, y=320, width=90, height=80)
-
-        button_sin = tkinter.Button(self.bootom_frame, text='sin(x)', bd='0', font=('微软雅黑', 20), bg='#FFFFFF',
-                               fg='#B5ADB8',command=lambda: self.pressSin())
-        button_sin.place(x=0, y=400, width=90, height=80)
-
-        button_cos = tkinter.Button(self.bootom_frame, text='cos(x)', bd='0', font=('微软雅黑', 20), bg='#FFFFFF',
-                                     fg='#B5ADB8',command=lambda: self.pressCos())
-        button_cos.place(x=90, y=400, width=90, height=80)
-
-        button_tan = tkinter.Button(self.bootom_frame, text='tan(x)', bd='0', font=('微软雅黑', 20), bg='#FFFFFF',
-                                   fg='#B5ADB8',command=lambda: self.pressTan())
-        button_tan.place(x=180, y=400, width=90, height=80)
-
-        button_ds = tkinter.Button(self.bootom_frame, text='1/x', bd='0', font=('微软雅黑', 20), bg='#FFFFFF',
-                                   fg='#B5ADB8',command=lambda: self.pressFractal())
-        button_ds.place(x=270, y=400, width=90, height=80)
-
-        button_sl = tkinter.Button(self.bootom_frame, text='√x', bd='0', font=('微软雅黑', 20), bg='#FFFFFF',
-                                     fg='#B5ADB8',command=lambda: self.pressSqrt())
-        button_sl.place(x=360, y=400, width=90, height=80)
-
-    def Commer(self):
-        root.minsize(height=600, width=450)
-        button_jump = tkinter.Button(self.bootom_frame, text='特殊', bd='0', font=('微软雅黑', 20), bg='#FFFFFF',
-                                     fg='#B5ADB8', command=lambda: self.Cover())
-        button_jump.place(x=0, y=320, width=90, height=80)
-
-if __name__ == '__main__':
-    calculator = MyCalculator(450, 600, '冲59分制作')
-    calculator.set_label()
-    calculator.set_span()
-    root.mainloop()
+    def retranslateUi(self, Dialog):
+        Dialog.setWindowTitle(_translate("Dialog", "Calculator", None))
+        self.b1.setText(_translate("Dialog", "1", None))
+        self.b3.setText(_translate("Dialog", "3", None))
+        self.b2.setText(_translate("Dialog", "2", None))
+        self.b6.setText(_translate("Dialog", "6", None))
+        self.b5.setText(_translate("Dialog", "5", None))
+        self.b4.setText(_translate("Dialog", "4", None))
+        self.b9.setText(_translate("Dialog", "9", None))
+        self.b8.setText(_translate("Dialog", "8", None))
+        self.b7.setText(_translate("Dialog", "7", None))
+        self.plus_minus.setText(_translate("Dialog", "+/-", None))
+        self.b0.setText(_translate("Dialog", "0", None))
+        self.decimal.setText(_translate("Dialog", ".", None))
+        self.equal.setText(_translate("Dialog", "=", None))
+        self.clear.setText(_translate("Dialog", "AC", None))
+        self.back.setText(_translate("Dialog", "Back", None))
+        self.add.setText(_translate("Dialog", "+", None))
+        self.substract.setText(_translate("Dialog", "-", None))
+        self.divide.setText(_translate("Dialog", "/", None))
+        self.multiply.setText(_translate("Dialog", "X", None))
+        self.sq_root.setText(_translate("Dialog", "Sqrt", None))
+        self.sin.setText(_translate("Dialog", "sin", None))
+        self.cos.setText(_translate("Dialog", "cos", None))
+        self.tan.setText(_translate("Dialog", "tan", None))
+        self.power.setText(_translate("Dialog", "^", None))
+        self.log.setText(_translate("Dialog", "log", None))
+        self.b_open.setText(_translate("Dialog", "(", None))
+        self.b_close.setText(_translate("Dialog", ")", None))
+        self.ln.setText(_translate("Dialog", "ln", None))
+        self.e.setText(_translate("Dialog", "e", None))
+        self.pi.setText(_translate("Dialog", "π", None))
+        self.bco.setText(_translate("Dialog", "j", None))
+        self.arg.setText(_translate("Dialog", "Arg", None))
+        self.r1.setText(_translate("Dialog", "Complex", None))
+        self.graph.setText(_translate("Dialog", "graph", None))
+        self.plot.setText(_translate("Dialog", "plot", None))
+        self.x.setText(_translate("Dialog", "x", None))
+        self.cos1.setText(_translate("Dialog", "cos-1", None))
+        self.sin1.setText(_translate("Dialog", "sin-1", None))
+        self.tan1.setText(_translate("Dialog", "tan-1", None))
+        self.fact.setText(_translate("Dialog", "x!", None))
+        self.comb.setText(_translate("Dialog", "nCr", None))
+        self.perm.setText(_translate("Dialog", "nPr", None))
+        self.com.setText(_translate("Dialog", ",", None))
+        self.equ.setText(_translate("Dialog", "Equation", None))
