@@ -9,6 +9,7 @@ import pyqtgraph as pg
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 
+
 def ncr(n,r):
     if(n>=r):
         f = math.factorial
