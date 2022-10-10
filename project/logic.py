@@ -24,34 +24,34 @@ def npr(n,r):
 class Graph(QtGui.QMainWindow): #Auxiliary class to display pop-up for inputting range
     def __init__(self,parent = None):
         super(Graph, self).__init__(parent)
-        page = QWidget()
+        page = PyQt5.QtWidgets.QWidget()
         page.setMinimumSize(QSize(350, 320))
         page.setWindowTitle("Enter range")
-        page.start = QLabel(page)
+        page.start = PyQt5.QtWidgets.QLabel(page)
         page.start.setText('Start:')
-        page.end = QLabel(page)
+        page.end = PyQt5.QtWidgets.QLabel(page)
         page.end.setText('End:')
-        page.step = QLabel(page)
+        page.step = PyQt5.QtWidgets.QLabel(page)
         page.step.setText('Step size:')
-       	self.button = QPushButton('Plot', page)
-       	self.edit1 = QLineEdit()
-       	self.edit2 = QLineEdit()
-       	self.edit3 = QLineEdit()
+       	self.button = PyQt5.QtWidgets.QPushButton('Plot', page)
+       	self.edit1 = PyQt5.QtWidgets.QLineEdit()
+       	self.edit2 = PyQt5.QtWidgets.QLineEdit()
+       	self.edit3 = PyQt5.QtWidgets.QLineEdit()
        	self.edit1.move(80,20)
        	page.start.move(20,15)
        	self.edit1.move(80,80)
        	page.end.move(20,85)
        	self.edit1.move(80,140)
        	page.step.move(20,145)
-       	vbox1 = QVBoxLayout()
+       	vbox1 = PyQt5.QtWidgets.QVBoxLayout()
        	vbox1.addWidget(self.edit1)
        	vbox1.addWidget(self.edit2)
        	vbox1.addWidget(self.edit3)
        	vbox1.addWidget(self.button)
        	page.setLayout(vbox1)
        	self.setCentralWidget(page)
-       	self.connect(self.button, SIGNAL("clicked()"), self.clicked)
-    
+        self.button.clicked.connect(self.clicked)
+
     def clicked(self):
        	l = float(self.edit1.text())
        	r = float(self.edit2.text())
@@ -68,7 +68,7 @@ class Graph(QtGui.QMainWindow): #Auxiliary class to display pop-up for inputting
        	pw.setTitle('y = f(x)')
         pw.setLabel('bottom', 'x -->')           	# x-label
        	pw.setLabel('left', 'y = f(x) -->')             # y-label
-
+	
 class calculator_class(calculator.Ui_Dialog,QtGui.QMainWindow):
 	def btnstate(self,r1):
 		if r1.isChecked() == True:
